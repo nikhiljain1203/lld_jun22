@@ -1,3 +1,4 @@
+import Controller.GameController;
 import models.*;
 
 import java.util.LinkedList;
@@ -48,6 +49,26 @@ public class TicTacToeGame {
             players.add(player);
         }
 
-        Game game
+//        Game game = Game.getBuilder()
+//                .setDimension(dimension)
+//                .setPlayers(players)
+//                .build();
+
+        GameController gameController = new GameController();
+
+        Game game = gameController.createGame(dimension, players);
+
+        while(gameController.getGameStatus(game)
+                == GameStatus.IN_PROGRESS) {
+            // TODO play the game
+            break;
+        }
+
+        if(gameController.getGameStatus(game) == GameStatus.DRAW) {
+            System.out.println("Game has drawn");
+        } else {
+            System.out.println("Game has won by: "
+                    + gameController.getWinnerName(game));
+        }
     }
 }

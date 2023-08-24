@@ -6,6 +6,12 @@ public class Cell {
     private int col;
     private CellState cellState;
 
+    public Cell(int i, int j) {
+        this.row = i;
+        this.col = j;
+        this.cellState = CellState.EMPTY;
+    }
+
     public Player getPlayer() {
         return player;
     }

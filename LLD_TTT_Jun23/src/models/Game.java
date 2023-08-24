@@ -1,5 +1,8 @@
 package models;
 
+import Exceptions.InvalidGameDimensionException;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public class Game {
@@ -8,6 +11,15 @@ public class Game {
     private List<Move> moves;
     private GameStatus gameStatus;
     private int nextPlayerIndex;
+    private Player winningPlayer;
+
+    public Player getWinningPlayer() {
+        return winningPlayer;
+    }
+
+    public void setWinningPlayer(Player winningPlayer) {
+        this.winningPlayer = winningPlayer;
+    }
 
     public Board getBoard() {
         return board;
@@ -49,6 +61,9 @@ public class Game {
         this.nextPlayerIndex = nextPlayerIndex;
     }
 
+    public static Builder getBuilder() {
+        return new Builder();
+    }
 
     public static class Builder {
         private int dimension;
@@ -65,17 +80,31 @@ public class Game {
         }
 
         public Game build() {
+            // validation
             try {
                 isValid();
-            } catch () {
-
+            } catch (InvalidGameDimensionException e) {
+                return null;
             }
+
+            Game game = new Game();
+            game.setBoard(new Board(dimension));
+            game.setPlayers(players);
+            game.setMoves(new LinkedList<>());
+            game.setNextPlayerIndex(0);
+
+            return game;
         }
 
-        private boolean isValid() {
+        private boolean isValid() throws InvalidGameDimensionException {
             if(dimension < 3) {
-                throw new
+                //return false;
+                throw new InvalidGameDimensionException
+                        ("Dimension should be greater than 2");
             }
+            // TODO to add more validation
+
+            return true;
         }
     }
 
