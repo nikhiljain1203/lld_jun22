@@ -1,6 +1,8 @@
 package models;
 
 import Exceptions.InvalidGameDimensionException;
+import Strategy.GameWinningStrategy;
+import Strategy.OrderOneGameWinningStrategy;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +14,16 @@ public class Game {
     private GameStatus gameStatus;
     private int nextPlayerIndex;
     private Player winningPlayer;
+
+    public GameWinningStrategy getGameWinningStrategy() {
+        return gameWinningStrategy;
+    }
+
+    public void setGameWinningStrategy(GameWinningStrategy gameWinningStrategy) {
+        this.gameWinningStrategy = gameWinningStrategy;
+    }
+
+    private GameWinningStrategy gameWinningStrategy;
 
     public Player getWinningPlayer() {
         return winningPlayer;
@@ -65,6 +77,35 @@ public class Game {
         return new Builder();
     }
 
+    public void makeNextMove() {
+        Player playerWhoMoveItis = players.get(nextPlayerIndex);
+        System.out.println("It is " +
+                playerWhoMoveItis.getName() + "'s turn");
+
+        Move move = playerWhoMoveItis.decideMove();
+
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        if (board.getBoard().get(row).get(col).getCellState()
+                .equals(CellState.EMPTY)) {
+            board.applyMove(move);
+            moves.add(move);
+
+            // check winner
+            if(gameWinningStrategy.checkWinner(board, move)) {
+                gameStatus = GameStatus.ENDED;
+                winningPlayer = playerWhoMoveItis;
+            }
+
+            nextPlayerIndex += 1;
+            nextPlayerIndex %= players.size();
+        } else {
+            // throw an exception
+        }
+
+    }
+
     public static class Builder {
         private int dimension;
         private List<Player> players;
@@ -92,6 +133,9 @@ public class Game {
             game.setPlayers(players);
             game.setMoves(new LinkedList<>());
             game.setNextPlayerIndex(0);
+            game.setGameStatus(GameStatus.IN_PROGRESS);
+            game.setGameWinningStrategy(
+                    new OrderOneGameWinningStrategy(dimension));
 
             return game;
         }
