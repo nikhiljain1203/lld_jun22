@@ -82,7 +82,7 @@ public class Game {
         System.out.println("It is " +
                 playerWhoMoveItis.getName() + "'s turn");
 
-        Move move = playerWhoMoveItis.decideMove();
+        Move move = playerWhoMoveItis.decideMove(board);
 
         int row = move.getCell().getRow();
         int col = move.getCell().getCol();
@@ -96,6 +96,11 @@ public class Game {
             if(gameWinningStrategy.checkWinner(board, move)) {
                 gameStatus = GameStatus.ENDED;
                 winningPlayer = playerWhoMoveItis;
+            }
+
+            // DRAW
+            if(moves.size() == board.getSize() * board.getSize()) {
+                gameStatus = GameStatus.DRAW;
             }
 
             nextPlayerIndex += 1;
