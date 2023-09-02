@@ -5,7 +5,6 @@ import models.VehicleType;
 public class GenerateTicketRequestDto {
     private Long gateId;
     private String vehicleNumber;
-
     private VehicleType vehicleType;
 
     public VehicleType getVehicleType() {
