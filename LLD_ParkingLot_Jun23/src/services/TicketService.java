@@ -1,6 +1,7 @@
 package services;
 
 import Repository.TicketRepository;
+import exception.NoParkingSpotFoundException;
 import models.*;
 import strategy.SpotAssignmentStrategy;
 
@@ -12,7 +13,7 @@ public class TicketService {
     private ParkingSpotService parkingSpotService;
     private TicketRepository ticketRepository;
     private ParkingLotService parkingLotService;
-    public Ticket generateTicket(String vehicleNumber, VehicleType vehicleType, Long gateId) {
+    public Ticket generateTicket(String vehicleNumber, VehicleType vehicleType, Long gateId) throws NoParkingSpotFoundException {
 
         //Flow:
         //1. Get vehicle from DB using vehicleNumber
@@ -26,6 +27,9 @@ public class TicketService {
 
         //3. Assign Parking Spot
         ParkingSpot parkingSpot = parkingLotService.getparkingSpot(vehicle, gate);
+        if(parkingSpot == null) {
+            throw new NoParkingSpotFoundException("No Parking Spot Found");
+        }
 
         //4. Update parking Spot as Occupied
         parkingSpot = parkingSpotService.assignParkingSpot(parkingSpot);
